@@ -1,0 +1,25 @@
+package common;
+
+//客户端与服务器通信通用消息包
+message CommonHead{
+	required int32 cmd = 1; 		//协议号
+	required int32 session = 2;		//通信的sessionId
+	optional bytes byte = 3; 		//协议包流
+}
+
+message Heart
+{
+	optional int32 clientTime = 1;	
+	optional int32 serverTime = 2;
+}
+
+message Emtpy
+{
+	
+}
+
+message NoticeMsg
+{
+	required int32 type = 1; //通知类型  1、msgbox 弹窗  2、AlertTips 飘字
+	required string content = 2; //通知内容  
+}

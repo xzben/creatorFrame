@@ -1,0 +1,77 @@
+package normal;
+
+//道具
+message Item
+{
+	required int32 id = 1; //道具id
+	required int32 count = 2; //道具数量
+}
+
+//玩家属性
+message Property
+{
+	required int32 id 			= 1; //属性id
+	optional int32 intValue 	= 2; // int 属性值
+	optional string strValue 	= 3; // string 属性值
+}
+
+message ItemList
+{
+	repeated Item items = 1;	
+}
+
+message PropertyList
+{
+	repeated Property props = 1;		
+}
+
+message PlayerInfo
+{
+	required int32 	id = 1;			//玩家id
+	required string nickname = 2; 	//玩家昵称
+	required string icon = 3;   	
+	required int32	sex  = 4;
+	required string phone = 5;
+	required int32  createTime = 6;
+}
+
+message LoginReq
+{
+	required int32  type = 1;
+	required int32 clientResVersion = 2; 	//客户端的res版本号
+	required int32 clientFullVersion = 3;//客户端的整包版本号
+	required string uuid = 4; //客户端的唯一标志	
+	required int32  platform = 5; //客户端平台类型	
+	optional string token = 6; //玩家的登录账号
+
+	optional string safeToken = 7; //登录安全监测字段
+}
+
+message	LoginResp
+{
+	required int32 		error = 1; 	//登录失败的错误码	
+	optional PlayerInfo info = 2; 	//玩家账号
+	optional string 	quicklyCode = 3;  //玩家快速登录的token
+	repeated Item   	items = 4;  //玩家身上登录后必要的道具
+	repeated Property	props = 5; 	//玩家身上登录后需要的属性内容	
+}
+
+message reqPlayerAllItem
+{
+	
+}
+
+message respPlayerItems
+{
+	repeated Item   items = 1; //玩家身上全部的道具
+}
+
+message reqPlayerAllProp
+{
+	
+}
+
+message respPlayerProperty
+{
+	repeated Property props = 1; //玩家身上全部的属性
+}

@@ -1,0 +1,4 @@
+client/temp/
+client/library/
+client/local/
+*.meta
