@@ -14,7 +14,7 @@ cc.Class({
         else if(this.m_data.vname != null)
         {
             let obj = new frame.BasePresenter(this.m_data.vname)
-            obj.show()
+            obj.show(this.m_data.params)
         }
     },
     //更新cell数据

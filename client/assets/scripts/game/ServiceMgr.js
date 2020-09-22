@@ -1,9 +1,10 @@
 var kServiceMap = {
-    // PlayerService: {path:"PlayerService",  autoStart : true,},
+    PlayerService: {path:"PlayerService",  autoStart : true,},
 }
 
 //service管理器
 var ServiceMgr = cc.Class({
+    name: "ServiceMgr",
     properties: {
         m_services : [],
     },

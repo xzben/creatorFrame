@@ -1,9 +1,12 @@
+const net = require("../scripts/net/net");
 // Learn cc.Class:
 //  - https://docs.cocos.com/creator/manual/en/scripting/class.html
 // Learn Attribute:
 //  - https://docs.cocos.com/creator/manual/en/scripting/reference/attributes.html
 // Learn life-cycle callbacks:
 //  - https://docs.cocos.com/creator/manual/en/scripting/life-cycle-callbacks.html
+
+const Network = require("../scripts/net/Network");
 
 let s_instance = null;
 
@@ -16,13 +19,16 @@ cc.Class({
 
     //
     loadModules(){
-        require("config")
-        require("log")
-        require("frame")
-        require("game")
-        require("Agui")
-        require("platform")
-        require("util")
+        require("config");
+        require("constant")
+        require("frame");
+        require("common")
+        require("log");
+        require("game");
+        require("Agui");
+        require("net");
+        require("platform");
+        require("util");
     },
 
     onLoad () {
@@ -35,15 +41,28 @@ cc.Class({
     },
 
     start () {
+        this.loadModules();
         cc.game.addPersistRootNode(this.node);
         game.StoreMgr.getInstance().init();
         game.SoundUtil.getInstance().init();
         game.ResMgr.getInstance().init();
         game.UIMgr.getInstance().init();
         game.SceneMgr.getInstance().init();
+        game.GameModel.getInstance().init();
         game.ServiceMgr.getInstance().init();
 
-        this.launchGame();
+        log.d("################ winsize", cc.winSize)
+        this.m_worldInited = false;
+        net.Network.getInstance().init( ()=>{
+            this.m_worldInited = true;
+            this.launchGame();
+        });
+    },
+
+    update(dt){
+        if(!this.m_worldInited) return;
+
+        net.Network.getInstance().update(dt);
     },
 
     launchGame(){

@@ -1,7 +1,8 @@
 
 //时间对象
 var Date_ = cc.Class({
-
+    name : "Data",
+    
     properties: {
         m_date : 0, //sec min day isdst wday yday year month  hour
         m_time : 0 //1970年1月1日起的毫秒数

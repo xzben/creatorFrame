@@ -1,4 +1,5 @@
 var SoundUtil = cc.Class({
+    name: "SoundUtil",
     properties: {
 
     },

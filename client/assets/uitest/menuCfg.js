@@ -5,7 +5,11 @@ var menuCfg = {
     TreeLayerTest : {title : "TreeLayerTest", vname:"uitest.prefabs/TreeLayerTest"},
     PageLayerTest : {title : "PageLayerTest", vname:"uitest.prefabs/PageLayerTest"},
     TalkLayerTest : {title : "TalkLayerTest", vname:"uitest.prefabs/TalkLayerTest"},
+    commonLayer     : {title : "CommonLayer", vname : "uitest.prefabs/CommonTestLayer"},
+
     TestGame      : {title : "testGame", pname : "testGamePresenter"},
+    TestProto     : {title : "TestProto", pname : "protoTestPresenter"},
+ 
 }
 
 module.exports = menuCfg

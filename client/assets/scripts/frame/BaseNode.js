@@ -95,37 +95,44 @@ var BaseNode = cc.Class({
         }
     },
     onLoad(){
-        log.d("######### BaseNode onLoad", this)
+        log.i("######### BaseNode onLoad", this)
         if(this.m_presenter != null){
             this.m_presenter.onLoad()
         }
     },
 
     start(){
-        log.d("######### BaseNode start", this)
+        log.i("######### BaseNode start", this)
         if(this.m_presenter != null){
             this.m_presenter.start()
         }
     },
 
     onEnable(){
-        log.d("######### BaseNode onEnable", this)
+        log.i("######### BaseNode onEnable", this)
         if(this.m_presenter != null){
             this.m_presenter.onEnable()
         }
     },
 
     onDisable(){
-        log.d("######### BaseNode onDisable", this)
+        log.i("######### BaseNode onDisable", this)
         if(this.m_presenter != null){
             this.m_presenter.onDisable()
         }
     },
 
     onDestroy(){
-        log.d("######### BaseNode onDestroy")
+        log.i("######### BaseNode onDestroy", this)
         if(this.m_presenter != null){
+            this.m_presenter.clearDelegate();
             this.m_presenter.onDestroy()
+        }
+    },
+
+    update( dt ){
+        if(this.m_presenter != null && this.m_presenter.update != null){
+            this.m_presenter.update(dt);
         }
     },
 
@@ -135,14 +142,16 @@ var BaseNode = cc.Class({
             this._bg_ = new cc.Node("_bg_")
             this._bg_.parent = this.node
             this._bg_.zIndex = -100
-            this._bg_.setContentSize(cc.winSize.width*2, cc.winSize.height*2)
-            var sprite = this._bg_.addComponent(cc.Sprite) 
+            this._bg_.setContentSize(cc.winSize.width, cc.winSize.height)
+            var sprite = this._bg_.addComponent(cc.Sprite)
 
             game.ResMgr.getInstance().load("images/block", cc.SpriteFrame, (err, spriteFrame)=> {
-                sprite.spriteFrame = spriteFrame;
-                sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM
-                sprite.spriteFrame = spriteFrame
-                this._bg_.setContentSize(cc.winSize.width*2, cc.winSize.height*2)
+                if(cc.isValid(this)){
+                    sprite.spriteFrame = spriteFrame;
+                    sprite.sizeMode = cc.Sprite.SizeMode.CUSTOM
+                    sprite.spriteFrame = spriteFrame
+                    this._bg_.setContentSize(cc.winSize.width*2, cc.winSize.height*2)
+                }
             });
         }
         var alpha = alpha == undefined ? 180 : alpha

@@ -5,6 +5,7 @@ var BaseScene = cc.Class({
 
     onLoad () { 
         this._super()
+        common.LoadingView.getInstance().checkAddAfterChangeScene()
     },
 
     start () {

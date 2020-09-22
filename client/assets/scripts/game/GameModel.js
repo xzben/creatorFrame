@@ -1,4 +1,6 @@
 var GameModel = cc.Class({
+    name: "GameModel",
+    
 	properties: {
         m_strMap : [],
     },
@@ -23,7 +25,13 @@ var GameModel = cc.Class({
             ret = key
             log.w("can't find the text by key: ", key)
         }
-        return ret ? ret : "unknow"
+        return ret
+    },
+
+    tryGetText( key ){
+        let ret = this.m_strMap[key]
+
+        return ret == null ? key : ret;
     },
 
 })

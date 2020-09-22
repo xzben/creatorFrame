@@ -1,6 +1,7 @@
 
 //UI管理器
 var UIMgr = cc.Class({
+    name: "UIMgr",
     properties: {
         uiControlList : null,
     },
@@ -41,11 +42,9 @@ var UIMgr = cc.Class({
                 }
     
                 if (needAnim) {
-                    uiControl.node.setScale(0.5);
-                    var action = cc.scaleTo(0.2, 1);
-                    action.easing(cc.easeElasticOut(0.8));
-                    uiControl.node.runAction(action)  
-                } 
+                    uiControl.showAnim(()=>{
+                    })
+                }
                 this.uiControlList.push(uiControl);
             }
             else{
@@ -59,7 +58,10 @@ var UIMgr = cc.Class({
         // console.log("UIMgr  Close");
         var func = (node, obj)=>{
             //要先从列表里删除
-            obj.node.destroy()
+            if(cc.isValid(obj.node)){
+                obj.node.destroy()
+            }
+            
             var index = this.uiControlList.indexOf(obj);
             if (index !== -1) {
                 this.uiControlList.splice(index, 1);
@@ -67,9 +69,9 @@ var UIMgr = cc.Class({
         }
         var needAnim = needAnim == undefined ? true : needAnim
         if (needAnim) {
-            var action = cc.scaleTo(0.08, 0);
-            action.easing(cc.easeElasticIn(0.8));
-            uiControl.node.runAction(cc.sequence(action, cc.callFunc(func, this, uiControl))) 
+            uiControl.closeAnim(()=>{
+                func(null, uiControl);
+            })
         }else{
             uiControl.node.runAction(cc.callFunc(func, this, uiControl)) 
         }   

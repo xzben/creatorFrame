@@ -4,7 +4,11 @@ cc.Class({
         view : {default : null,type: Agui.TableView,},
     },
 
+    ctor(){
+        log.d("################ test Scene ctor")
+    },
     onLoad() {
+        log.d("################ test Scene onLoad")
         this._super()
     },
 

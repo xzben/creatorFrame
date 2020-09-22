@@ -8,9 +8,12 @@ cc.Class({
         return "uitest.testScene";
     },
 
+    onLoad(){
+        this._super();
+        log.d("######################testScene:onLoad")
+    },
     start(){
         this._super();
-        log.d("############# start")
         let menuCfg = require("menuCfg")
         let tempData = []
         for (const key in menuCfg) {

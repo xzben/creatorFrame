@@ -10,7 +10,7 @@ let Store = cc.Class({
 	
 	getBoolValue(key, def){
 		var value = cc.sys.localStorage.getItem(key);
-		cc.log("################# getBoolValue",key, value)
+		log.i("################# getBoolValue",key, value)
 		if( value)
 		{
 			value = parseInt(value) == 1;
@@ -39,7 +39,7 @@ let Store = cc.Class({
 	},
 
 	setIntValue(key, value){
-		log.d("################## setIntValue", key, value)
+		log.i("################## setIntValue", key, value)
 		cc.sys.localStorage.setItem(key, value);
 	},
 
@@ -72,13 +72,13 @@ let Store = cc.Class({
 	setObjectValue(key, object){
 		var stringify = JSON.stringify(object || {})
         cc.sys.localStorage.setItem(key, stringify)
-        log.d("################## save", key, stringify, object)
+        log.i("################## save", key, stringify, object)
 	},
 	
 	getObjectValue(key, def){
 		var userData = cc.sys.localStorage.getItem(key)
         var values = JSON.parse(userData || def)
-        log.d("################## load", key, userData, values)
+        log.i("################## load", key, userData, values)
 	},
 })
 

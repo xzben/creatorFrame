@@ -15,11 +15,25 @@ var BaseView = cc.Class({
     },
 
     checkSetBlockInput(){
-        this.blockInputEvents = this.getComponent(cc.BlockInputEvents)
-        if (this.blockInputEvents == null) {
-            this.blockInputEvents = this.addComponent(cc.BlockInputEvents)
-            this.blockInputEvents.enabled = true;
-        }
+        this._blockInputNode_ = new cc.Node("_blockInputNode_")
+        this._blockInputNode_.parent = this.node
+        this._blockInputNode_.zIndex = -1000
+        this._blockInputNode_.setContentSize(cc.winSize.width, cc.winSize.height)
+        let blockInputEvents = this._blockInputNode_.addComponent(cc.BlockInputEvents)
+        blockInputEvents.enabled = true;
+    },
+
+    showAnim( doneCallback ){
+        this.node.setScale(0.5);
+        var action = cc.scaleTo(0.2, 1);
+        action.easing(cc.easeElasticOut(0.8));
+        this.node.runAction(cc.sequence(action, cc.callFunc(doneCallback)))  
+    },
+
+    closeAnim( doneCallback ){
+        var action = cc.scaleTo(0.08, 0);
+        action.easing(cc.easeElasticIn(0.8));
+        this.node.runAction(cc.sequence(action, cc.callFunc(doneCallback))) 
     },
 
     start(){

@@ -1,6 +1,7 @@
 
 
 var SceneMgr = cc.Class({
+	name: "SceneMgr",
     properties: {
     },
 

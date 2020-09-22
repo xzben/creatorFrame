@@ -27,7 +27,11 @@ let BaseScenePresenter = cc.Class({
         if(resPath == null)
             resPath = this.getViewPath();
 
+        this.m_loadViewTag++;
+        let tag = this.m_loadViewTag
         game.ResMgr.getInstance().loadScene(resPath, (err, sceneAsset)=>{
+            if(tag !== this.m_loadViewTag)  return; // 过滤掉只要最后一次调用加载的node
+            
             this.m_sceneNode = sceneAsset.scene
             let canvas = this.m_sceneNode.getChildByName('Canvas');
             let baseNode = canvas.getComponent(frame.BaseNode)

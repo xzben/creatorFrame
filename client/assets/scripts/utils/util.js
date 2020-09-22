@@ -1,5 +1,19 @@
 
-var util = {}
+var util = {
+	os : require("OSys"),
+	Date : require("Date"),
+	table : require("Table"),
+    Base64 : require("Base64"),
+    Color : require("Color"),
+    Clone : require("Clone"),
+    Functions : require("Functions"),
+    HttpUtils : require("HttpUtils"),
+	VisibleRect : require("VisibleRect"),
+	TouchHelper : require("TouchHelper"),
+	MoneyFormat : require("MoneyFormat"),
+	SeqTask : require("SeqTask"),
+	CryptoJs : require("CryptoJs"),
+}
 
 //判断对象是否为空 
 util.isNull = function( obj ){
@@ -143,8 +157,92 @@ util.moneyFormat = function(money, show_length) {
         }
     }
 }
+util.playBtnEffect = function(needAudioEffect){
+	var kEffectTypeConfig = [
+		"audio/btn/effect_btn",
+		"audio/btn/effect_close",
+		"audio/btn/effect_table",
+		"audio/btn/effect_return",
+	]
+	var effectType = constant.SoundClickType.NORMAL
+	if (typeof needAudioEffect === "boolean"){
+		if (needAudioEffect == false){
+			effectType = constant.SoundClickType.NONE
+		}
+	}	
+	else if (typeof needAudioEffect == "number"){	
+		effectType = needAudioEffect
+	}
+	else{
+		effectType = constant.SoundClickType.NORMAL
+	}
+
+	var needAudioEffectPath = kEffectTypeConfig[effectType]
+	game.SoundUtil.getInstance().playEffect(needAudioEffectPath)
+}
+
+util.addClickCallback = function(widget, callback, needAudioEffect ){
+	if (widget && widget instanceof cc.Button) {
+		widget.node.on("click", function(event){
+        	util.playBtnEffect(needAudioEffect)
+           	callback()
+        }, widget); 
+	}else if (widget && widget instanceof cc.Node){
+		var comp = widget.getComponent(cc.Button)
+        if (util.isNull(comp)) {
+            widget.addComponent(cc.Button)
+		}
+		widget.on("click", function(event){
+        	util.playBtnEffect(needAudioEffect)
+           	callback()
+        }, widget); 
+	}
+}
+
+util.addClickGapTimes = function(widget, callback, gaptime, needAudioEffect ){
+	var lastTime = 0
+	util.addClickCallback(widget, ()=>{
+		var curTime = util.os.date().getTime()
+		log.d("===========curTime - lastTime :", curTime - lastTime)
+		if (curTime - lastTime < gaptime) {
+			return 
+		}else{
+			lastTime = curTime
+			callback()
+		}
+	}, needAudioEffect)
+}
 
 
+util.getChildByName = function(node, name){
+	if (node == null || node == undefined) {
+		return null
+	}
 
+	var strName = String(name)
+	var arr = strName.split(".")
+	var parent = node
+
+	for(var i = 0; i < arr.length; i++){
+		var curName = arr[i]
+		var parent = parent.getChildByName(curName)
+		if(parent === null){
+			return null;
+		}
+	}
+	return parent
+}
+
+util.getChildComponent = function(node, childname, comName){
+	if (node == null || node == undefined) {
+		return null
+	}
+	
+	var node = util.getChildByName(node, childname)
+	if(node != null){
+		return node.getComponent(comName)
+	}
+	return undefined
+}
 
 window.util = util

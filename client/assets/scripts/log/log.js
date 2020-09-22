@@ -1,35 +1,38 @@
-/**
- * trace
- * @param [int] [count=10]
- */
-function trace () 
+const LogController = require("LogController")
+const LogLevel = require("LogLevel")
+
+function trace(... params ) 
 {
-    console.trace.apply(null,arguments)
+    console.trace.apply(null,params)
 }
 
-function info()
+function LogBase(level, params)
 {
-    console.log.apply(null,arguments)
+    LogController.getInstance().handleLog(level, params)
 }
 
-function debug()
+function info( ... params )
 {
-    // cc.log.apply(null,arguments)
-    console.log.apply(null,arguments) 
+    LogBase(LogLevel.INFO, params)
 }
 
-function warn()
+function debug(... params )
 {
-    console.log("################### warn begin ###################")
-    console.log.apply(null,arguments)
-    console.log("################### warn end ###################")
+    LogBase(LogLevel.DEBUG, params)
 }
 
-function error()
+function warn(... params )
 {
-    console.log("################### error begin ###################")
-    console.log(arguments)
-    console.log("################### error end ###################")
+    LogBase(LogLevel.DEBUG, "################### warn begin ###################")
+    LogBase(LogLevel.WARN, params)
+    LogBase(LogLevel.DEBUG, "################### warn end ###################")
+}
+
+function error(... params )
+{
+    LogBase(LogLevel.DEBUG, "################### error begin ###################")
+    LogBase(LogLevel.ERROR, params)
+    LogBase(LogLevel.DEBUG, "################### error end ###################")
 }
 
 function tryError( err )
@@ -46,6 +49,7 @@ var log = {
     e : error,
     trace : trace,
     tryError : tryError,
+    LogController : LogController,
 }
 
 window.log = log

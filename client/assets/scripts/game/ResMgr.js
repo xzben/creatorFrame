@@ -1,4 +1,50 @@
+let parseLoadResArgs = function(type, onProgress, onComplete) {
+    if (onComplete === undefined) {
+        var isValidType = cc.js.isChildClassOf(type, cc.Asset);
+        if (onProgress) {
+            onComplete = onProgress;
+            if (isValidType) {
+                onProgress = null;
+            }
+        }
+        else if (onProgress === undefined && !isValidType) {
+            onComplete = type;
+            onProgress = null;
+            type = null;
+        }
+        if (onProgress !== undefined && !isValidType) {
+            onProgress = type;
+            type = null;
+        }
+    }
+    return { type, onProgress, onComplete };
+};
+
+let parseParameters = function (options, onProgress, onComplete) {
+    if (onComplete === undefined) {
+        var isCallback = typeof options === 'function';
+        if (onProgress) {
+            onComplete = onProgress;
+            if (!isCallback) {
+                onProgress = null;
+            }
+        }
+        else if (onProgress === undefined && isCallback) {
+            onComplete = options;
+            options = null;
+            onProgress = null;
+        }
+        if (onProgress !== undefined && isCallback) {
+            onProgress = options;
+            options = null;
+        }
+    }
+    options = options || Object.create(null);
+    return { options, onProgress, onComplete };
+};
+
 var ResMgr = cc.Class({
+    name: "ResMgr",
     properties: {
         uiControlList : null,
     },
@@ -13,11 +59,107 @@ var ResMgr = cc.Class({
         // cc.assetManager.downloader.maxRequestsPerFrame = 6;  //每帧最多发起多少下载次数
     },
 
-    _checkLoadBundle( pathName, donCallback){
-        log.d("###############_checkLoadBundle ############## ")
+    _checkLoadBundle(pathName, onProgress, onComplete, doneCallback){
+        if(typeof(pathName) === "string"){
+            this._checkLoadSignal(pathName, onProgress, onComplete, doneCallback)
+        }else{
+           this._checkLoadArrs(pathName, onProgress, onComplete, doneCallback)
+        }
+    },
+
+    _checkLoadArrs(pathName, onProgress, onComplete, doneCallback){
+        let bundleNames = []
+        let bundleRes = {}
+        let bundleCount = 0
+        let resCount = 0
+        let tempResCache = {}
+        pathName.forEach(( path )=>{
+            let arr = String(path).split(".")
+            let bundleName;
+            let resName;
+
+            if(arr.length == 1){
+               bundleName = "resources"
+               resName = arr[0]
+            }else{
+                bundleName = arr[0]
+                resName = arr[1]
+            }
+            
+            let bundleResNames = bundleRes[bundleName];
+            if(bundleResNames == null){
+                bundleResNames = [];
+                bundleRes[bundleName] = bundleResNames;
+                bundleNames.push(bundleName);
+                bundleCount++;
+            }
+
+            if(tempResCache[path] == null)
+            {
+                tempResCache[path] = true;
+                bundleResNames.push(resName);
+                resCount++;
+            }
+        })
+
+        let maxCount = resCount;
+        let finishCount = 0;
+        let curFinish = 0;
+        let results = [];
+        let isFinish = false;
+        let tempCache = {}
+
+        let newProcess, newComplete;
+
+
+        if(onProgress != null){
+            newProcess = (finish, totoal, item)=>{
+                log.d("########### process", finish, totoal, item)
+                if(bundleCount == 1)
+                    onProgress(finish, totoal, item)
+                else{
+                    onProgress(curFinish, maxCount, item)
+                }
+            };
+        }
+       
+        if(onComplete != null){
+            newComplete = (err, items)=>{
+                finishCount++;
+                if(isFinish) return;
+
+                if(err){
+                    isFinish = true;
+                    onComplete(err, null)
+                    return;
+                }
+
+                results.push(items);
+
+                if(finishCount >= bundleCount){
+                    isFinish = true;
+                    return onComplete(null, results)
+                }
+            };
+        }
+        
+
+        bundleNames.forEach((bundleName)=>{
+            let bundle = cc.assetManager.getBundle(bundleName);
+            if( bundle == null){
+                this.loadBundle(bundleName, (err, asset)=>{
+                    doneCallback(null, bundleRes[bundleName], asset, newProcess, newComplete);
+                })
+            }else{
+                doneCallback(null, bundleRes[bundleName], bundle, newProcess, newComplete);
+            }
+        })
+    },
+
+    _checkLoadSignal(pathName, onProgress, onComplete, doneCallback){
         let arr = String(pathName).split(".")
         if(arr.length == 1){
-            donCallback(null, arr[0], cc.resources)
+            doneCallback(null, arr[0], cc.resources, onProgress, onComplete)
         }else{
             let bundleName = arr[0];
             let path = arr[1]
@@ -25,47 +167,52 @@ var ResMgr = cc.Class({
             if( bundle == null){
                 this.loadBundle(bundleName, (err, asset)=>{
                     bundle = asset
-                    donCallback(err, path, bundle)
+                    doneCallback(err, path, bundle, onProgress, onComplete)
                 })
             }else{
-                donCallback(null, path, bundle)
+                doneCallback(null, path, bundle, onProgress, onComplete)
             }
         }
     },
 
-    loadScene(paths, options, onProcess, onComplete){
-        this._checkLoadBundle(paths, (err, resPath, bundle)=>{
-            this.loadSceneFromBundle(bundle, resPath, options, onProcess, onComplete);
+    loadScene(paths, options, onProgress, onComplete){
+        var { options, onProgress, onComplete } = parseParameters(options, onProgress, onComplete);
+        this._checkLoadBundle(paths, onProgress, onComplete,  (err, resPath, bundle, newProcess, newComplete)=>{
+            this.loadSceneFromBundle(bundle, resPath, options, newProcess, newComplete);
         })
     },
-    load(paths, type, onProcess, onComplete){
-        this._checkLoadBundle(paths, (err, resPath, bundle)=>{
-            log.d("################ load", bundle, resPath)
-            this.loadFromBundle(bundle, resPath, type, onProcess, onComplete);
-        })
-    },
-
-    loadDir(dir, type, onProcess, onComplete){
-        this._checkLoadBundle(dir, (err, resPath, bundle)=>{
-            this.loadDirFromBundle(bundle, resPath, type, onProcess, onComplete);
+    load(paths, type, onProgress, onComplete){
+        var { type, onProgress, onComplete } = parseLoadResArgs(type, onProgress, onComplete)
+        this._checkLoadBundle(paths, onProgress, onComplete,  (err, resPath, bundle, newProcess, newComplete)=>{
+            this.loadFromBundle(bundle, resPath, type, newProcess, newComplete);
         })
     },
 
-    preload(paths, type, onProcess, onComplete){
-        this._checkLoadBundle(paths, (err, resPath, bundle)=>{
-            this.preloadFromBundle(bundle, resPath, type, onProcess, onComplete);
+    loadDir(dir, type, onProgress, onComplete){
+        var { type, onProgress, onComplete } = parseLoadResArgs(type, onProgress, onComplete)
+        this._checkLoadBundle(dir, onProgress, onComplete,  (err, resPath, bundle, newProcess, newComplete)=>{
+            this.loadDirFromBundle(bundle, resPath, type, newProcess, newComplete);
+        })
+    },
+
+    preload(paths, type, onProgress, onComplete){
+        var { type, onProgress, onComplete } = parseLoadResArgs(type, onProgress, onComplete)
+        this._checkLoadBundle(paths, onProgress, onComplete,  (err, resPath, bundle, newProcess, newComplete)=>{
+            this.preloadFromBundle(bundle, resPath, type, newProcess, newComplete);
         });
     },
 
-    preloadScene(paths, options, onProcess, onComplete){
-        this._checkLoadBundle(paths, (err, resPath, bundle)=>{
-            this.preloadSceneFromBundle(bundle, resPath, options, onProcess, onComplete);
+    preloadScene(paths, options, onProgress, onComplete){
+        var { options, onProgress, onComplete } = parseParameters(options, onProgress, onComplete);
+        this._checkLoadBundle(paths, onProgress, onComplete,  (err, resPath, bundle, newProcess, newComplete)=>{
+            this.preloadSceneFromBundle(bundle, resPath, options, newProcess, newComplete);
         });
     },
 
-    proloadDir(dir, type, onProcess, onComplete){
-        this._checkLoadBundle(paths, (err, resPath, bundle)=>{
-            this.preloadDirFromBundle(bundle, resPath, type, onProcess, onComplete);
+    proloadDir(dir, type, onProgress, onComplete){
+        var { type, onProgress, onComplete } = parseLoadResArgs(type, onProgress, onComplete)
+        this._checkLoadBundle(dir, onProgress, onComplete,  (err, resPath, bundle, newProcess, newComplete)=>{
+            this.preloadDirFromBundle(bundle, resPath, type, newProcess, newComplete);
         });
     },
 
