@@ -1,0 +1,54 @@
+﻿html
+  head
+    link(rel='icon' href='app/editor/static/preview-templates/favicon.ico')
+    meta(charset='utf-8')
+    title=title
+    meta(name='viewport' content='width=device-width,user-scalable=no,initial-scale=1, minimum-scale=1,maximum-scale=1')
+    meta(name='apple-mobile-web-app-capable' content='yes')
+    meta(name='full-screen' content='yes')
+    meta(name='screen-orientation' content='portrait')
+    meta(name='x5-fullscreen' content='true')
+    meta(name='360-fullscreen' content='true')
+    
+    meta(name='renderer' content='webkit')
+    meta(name='force-rendering' content='webkit')
+    meta(http-equiv='X-UA-Compatible' content='IE=edge,chrome=1')
+
+    link(rel='stylesheet' href='app/editor/static/preview-templates/style.css')
+
+    block head
+
+  body
+
+    //- block toolbar
+    //-  include ./toolbar.jade
+
+    //-div.content#content
+    //-  div.contentWrap
+    //-    div.wrapper#GameDiv
+    //-      canvas#GameCanvas
+
+    //-      div#splash
+    //-        div.progress-bar.stripes
+    //-          span
+    //-      div#bulletin
+    //-        div.inner#sceneIsEmpty= tip_sceneIsEmpty
+    //-div#recompiling
+    //-  span Recompiling scripts, please wait for refresh...
+    include ./ccc-devtools/index.html
+    script(type='text/javascript' charset='utf-8' src='settings.js')
+    script(type='text/javascript' charset='utf-8' src='preview-scripts/__quick_compile__.js')
+    script(type='text/javascript' charset='utf-8' src='app/editor/static/preview-templates/boot.js')
+    script(type='text/javascript' charset='utf-8' src='/socket.io/socket.io.js')
+    script(type='text/javascript').
+      window.__socket_io__ = window.io;
+      // window.CC_PHYSICS_CANNON = #{enableCannonPhysics};
+      // window.CC_PHYSICS_BUILTIN = #{enableBuiltinPhysics};
+
+    if enableDebugger
+      script(type='text/javascript' charset='utf-8' src='app/node_modules/vconsole/dist/vconsole.min.js')
+    script(type='text/javascript' charset='utf-8' src='app/engine/bin/' + cocos2d)
+
+    if enableDebugger
+      script(type='text/javascript').
+        vConsole = new VConsole();
