@@ -24,5 +24,7 @@ cc.Class({
         log.d("############## proto test ##################")
         log.d("########### cmd ", cmd, " session:", session)
         log.d(data);
+
+        common.AlertTips.show("请看日志输出信息！")
     },
 });

@@ -6,7 +6,7 @@ cc.Class({
     },
 
     setText( text ){
-        this.content.strintg = text;
+        this.content.string = text;
     },
 
     showAnim( doneCallback ){
