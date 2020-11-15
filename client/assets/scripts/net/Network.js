@@ -115,12 +115,12 @@ let Network = cc.Class({
     },
     
     handleConnectSuccess(){
-        // common.LoadingView.getInstance().close()
+        common.LoadingView.getInstance().close()
         this.clear();
     },
     
     handleDisconnect(){
-        // common.LoadingView.getInstance().close()
+        common.LoadingView.getInstance().close()
         this.clear();
         this.startNetwork();
     },
@@ -133,13 +133,14 @@ let Network = cc.Class({
         this.m_socket = newSocket;
         
         this.m_status = constant.NetStatus.CONNECTING
+        let other = this
         this.m_socket.onopen = function( event ){
-            log.d("Network:connect success", this.m_socket);
-            this.m_status = constant.NetStatus.CONNECT_SUCCESS;
-            this.m_startConnectTime = -1;
-            this.eatWatchDog();
-            this.handleConnectSuccess();
-            this.event(constant.NetEvent.CONNECT_SUCCESS);
+            log.d("Network:connect success", other.m_socket);
+            other.m_status = constant.NetStatus.CONNECT_SUCCESS;
+            other.m_startConnectTime = -1;
+            other.eatWatchDog();
+            other.handleConnectSuccess();
+            other.event(constant.NetEvent.CONNECT_SUCCESS);
         };
 
         this.m_headBuffer = new Buffer(HEAD_SIZE);
@@ -149,36 +150,36 @@ let Network = cc.Class({
         this.m_dataBuffer = null;
 
         this.m_socket.onmessage = function( event ){
-            this.handleMsgArrayBuffer(event.data)
+            other.handleMsgArrayBuffer(event.data)
         }
 
         this.m_socket.onerror = function(event){
             log.d("Network:onerror 111", event);
-            if(newSocket !== this.m_socket) return;
-            this.m_status = constant.NetStatus.CONNECT_CLOSE;
+            if(newSocket !== other.m_socket) return;
+            other.m_status = constant.NetStatus.CONNECT_CLOSE;
 
-            if(this.m_socket){
-                delete this.m_socket;
-                this.m_socket = null;
+            if(other.m_socket){
+                delete other.m_socket;
+                other.m_socket = null;
             }
             log.d("Network:onerror", event);
 
-            this.handleDisconnect();
-            this.event(constant.NetEvent.LOST_CONNECT);
+            other.handleDisconnect();
+            other.event(constant.NetEvent.LOST_CONNECT);
         }
 
         this.m_socket.onclose = function( event ){
             log.d("Network:onclose 111", event);
-            if(newSocket !== this.m_socket)return;
-            this.m_status = constant.NetStatus.CONNECT_CLOSE;
+            if(newSocket !== other.m_socket)return;
+            other.m_status = constant.NetStatus.CONNECT_CLOSE;
             log.d("Network:onclose", event);
-            if(this.m_socket){
-                delete this.m_socket;
-                this.m_socket = null;
+            if(other.m_socket){
+                delete other.m_socket;
+                other.m_socket = null;
             }
 
-            this.handleDisconnect();
-            this.event(constant.NetEvent.LOST_CONNECT);
+            other.handleDisconnect();
+            other.event(constant.NetEvent.LOST_CONNECT);
         }
     },
 
@@ -280,7 +281,7 @@ let Network = cc.Class({
                 {
                     this.handleMsg(this.m_dataBuffer);
 
-                    this.m_headBuffer = new Buffer(4);
+                    this.m_headBuffer = new Buffer(HEAD_SIZE);
                     this.m_curHeadSize = 0
                     this.m_curContentSize = 0
                     this.m_needContentSize = 0
@@ -305,6 +306,7 @@ let Network = cc.Class({
             if( session >= 0){
                 this.handleRequestResp(session, true, cmd, data)
             }
+            log.d("handleMsg", cmd, data)
             this.event(cmd, data, session);
         }else{
             log.e("handle message decode failed", buffer);
@@ -378,7 +380,11 @@ let Network = cc.Class({
         let sessionId = this.getSessionId();
 
         let buffer = net.ProtoRegister.getInstance().encodeMessage(cmd, data, sessionId);
-        if( buffer == null) return;
+        if( buffer == null) 
+        {
+            log.e("sendMsg failed encode buffer == null");
+            return;
+        }   
 
         if(typeof(sendOkCallback) == "function"){
             this.waitSessionResp(sessionId, sendOkCallback)
@@ -392,8 +398,9 @@ let Network = cc.Class({
 		let sendBuf = new ArrayBuffer(HEAD_SIZE);
 		let intBuf = new Int32Array(sendBuf);
 		intBuf[0] = len;
-		this.m_socket.send(sendBuf);
-		this.m_socket.send(buffer.buffer);
+        log.d("sendMsg buffer:", cmd, data, len, buffer)
+        this.m_socket.send(sendBuf)
+		this.m_socket.send(buffer);
     }
 })
 

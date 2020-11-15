@@ -23,3 +23,8 @@ message NoticeMsg
 	required int32 type = 1; //通知类型  1、msgbox 弹窗  2、AlertTips 飘字
 	required string content = 2; //通知内容  
 }
+
+message Error
+{
+	required int32 error = 1; //错误码
+}

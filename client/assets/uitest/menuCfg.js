@@ -6,6 +6,7 @@ var menuCfg = {
     PageLayerTest : {title : "PageLayerTest", vname:"uitest.prefabs/PageLayerTest"},
     TalkLayerTest : {title : "TalkLayerTest", vname:"uitest.prefabs/TalkLayerTest"},
     commonLayer     : {title : "CommonLayer", vname : "uitest.prefabs/CommonTestLayer"},
+    TestNetwork     : {title : "TestNetwork", vname : "uitest.prefabs/networkTest"},
 
     TestGame      : {title : "testGame", pname : "testGamePresenter"},
     TestProto     : {title : "TestProto", pname : "protoTestPresenter"},

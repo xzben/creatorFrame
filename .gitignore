@@ -3,3 +3,4 @@ client/library/
 client/local/
 *.meta
 client/.vscode/
+temp/
