@@ -1,68 +1,80 @@
 # creatorFrame
-creator 边学边做的开发框架，欢迎志同道合的朋友一起扩展和使，交流加群(QQ) ：1042126603
-
+creator 边学边做的开发框架，欢迎志同道合的朋友一起扩展和使，交流加群(QQ) ：<u>1042126603</u>
 框架界面结构为 MVP
 
 最新creator 3.5 版本的 ts 框架
 
-项目结构
+#### 项目结构
 1、 launch 为启动模块，主要目的为制作一个最小启动包，方便 小游戏 和 H5 平台游戏的快速启动。
+
 2、modules 为项目中各个模块资源的根目录，modules 目录中按照功能模块分目录，并且每个目录为一个 bundle 包
+
 3、resources 是引擎内置的 bundle 包，里面只放置少了必要资源在启动时加载。具体业务资源放到 modules 对应的业务bundle 包中
+
 4、scripts 为整个游戏的业务逻辑代码根目录，这里scripts 目录也是一个 bundle包，作为一个独立的代码bundle,主要是为了小游戏业务将代码包独立，能解决单包4mb 的限制问题。
 原则上复杂的业务逻辑代码可以再独立bundle包。但是代码模块bundle包的项目引用是比较麻烦的。所以除非必要不建议这么使用，因为需要额外的使用注意，否则会带来很多的使用上的麻烦（在第一版本设计的时候就是各个模块一个bundle 代码包，后续使用发现很容易不小心造成各种麻烦，为了简化使用难度才整合为一个独立的bundle降低复杂度。）
 
-内置基础框架解析
-1、scripts/base 为内置的核心基础组件根目录
+#### 内置基础框架解析
 
-scripts/base/core 为核心的各种管理器，AOPMananger，ResLoader，SceneMgr,ServiceMgr,SoundMgr,StoreMgr,UIMgr 等
-scripts/base/frame 为内置的基础对象基类，比如场景基类BaseScene，BaseView 基础界面累，BaseUI基础组件UI基类，EventDispatccher 事件派发器基类
-scripts/base/gui 为内置的常用UI 组件，比如 虚拟列表，网络Image, 虚拟网格列表
-scripts/base/localized 为本地化语言使用的封装
-scripts/base/log  为日志模块的封装，主要是为了各种日志的控制和后期对日志有上传需求的时候留下缺口
-scripts/base/net 为内置网络模块，这里内置了 protobuf 的封装，网络接口设计，在协议层对每次的包设计了一个 sessionid 方便我们业务上，常用的 rpc，和一次性发送需求等场景的使用
-scripts/base/platfrom 为内置平台化的封装，将各个平台H5,Android，iOS 等平台的接口封装导出一个 platform 对象让业务层不在感知自己所在平台，
-scripts/base/update 为内置的热更新模块封装
-scripts/base/config 为内置使用的一些配置相关文件
+1. scripts/base 为内置的核心基础组件根目录.
+
+2. scripts/base/core 为核心的各种管理器，AOPMananger，ResLoader，SceneMgr,ServiceMgr,SoundMgr,StoreMgr,UIMgr 等
+
+3. scripts/base/frame 为内置的基础对象基类，比如场景基类BaseScene，BaseView 基础界面累，BaseUI基础组件UI基类，EventDispatccher 事件派发器基类
+
+4. scripts/base/gui 为内置的常用UI 组件，比如 虚拟列表，网络Image, 虚拟网格列表
+
+5. scripts/base/localized 为本地化语言使用的封装
+
+6. scripts/base/log  为日志模块的封装，主要是为了各种日志的控制和后期对日志有上传需求的时候留下缺口
+
+7. scripts/base/net 为内置网络模块，这里内置了 protobuf 的封装，网络接口设计，在协议层对每次的包设计了一个 sessionid 方便我们业务上，常用的 rpc，和一次性发送需求等场景的使用
+
+8. scripts/base/platfrom 为内置平台化的封装，将各个平台H5,Android，iOS 等平台的接口封装导出一个 platform 对象让业务层不在感知自己所在平台，
+
+9. scripts/base/update 为内置的热更新模块封装
+
+10. scripts/base/config 为内置使用的一些配置相关文件
 
 
-代码核心模块（MVP）
+#### 代码核心模块（MVP）
 1、项目整体结构时mvp的设计结构，这也是我原先cocos lua中一直使用的，当然随着个人一直使用和感悟和标准的mvp会有些个人自己的使用和设计上的调整（主要是个人觉得会更好用）。
 
 2、 M 数据层，此模块主要是负责，模块数据维护，模块与服务器交互（整个模块中只有M层能和服务器交过，所有模块都需要通过M层 service 才能访问服务器）。
 
 M 层主要由两个元素组成：
 
-1. Service 按模块实现的全局单例，根据模块会有不同的各种service，另外service 也是一个事件派发器，M层和其它模块的交互都是通过观察者模式来实现解耦的。按模块每个service     会实现各种业务与服务器通信的接口，并且也会持有模块一些长久需要保存的内存数据（比如玩家信息）。
+1. Service 按模块实现的全局单例，根据模块会有不同的各种service，另外service 也是一个事件派发器，M层和其它模块的交互都是通过观察者模式来实现解耦的。按模块每个service     会实现各种业务与服务器通信的接口，并且也会持有模块一些长久需要保存的内存数据（比如玩家信息）。
 
-2、Model 是数据的一个封装，单独将一些相对复杂的数据结构封装成class 将数据的一些公共操作封装再model class 中。model 最终都归 service 持有和操作。
+2. Model 是数据的一个封装，单独将一些相对复杂的数据结构封装成class 将数据的一些公共操作封装再model class 中。model 最终都归 service 持有和操作。
 
-V 层，由于creator 本身就支持了代码绑定节点，所以其实 界面prefab 就相当于view 层。
+3. V 层，由于creator 本身就支持了代码绑定节点，所以其实 界面prefab 就相当于view 层。
 
-P 层，绑定在prefab 上的脚本，主要是负责界面逻辑控制，和service 通过事件绑定接收数据层的变化，通过访问service 单例对象主动获取模块的数据和网络接口。
+4. P 层，绑定在prefab 上的脚本，主要是负责界面逻辑控制，和service 通过事件绑定接收数据层的变化，通过访问service 单例对象主动获取模块的数据和网络接口。
 
-核心代码组件
+#### 核心代码组件
 
 1、ResLoader 资源管理器，项目中资源加载释放等管理。这里我的设计是单例+实例的管理方式，单例负责归纳总体管理，实例负责模块块化资源管理，这样每个模块的资源可以一个实例resloader 方便的一次性释放。当模块关闭时能够直接释放自己持有的resloader 就能快速释放模块加载的所有资源。对业务管理资源更加的简单方便。
 
 2、SceneMgr 场景管理器，这个管理器其实只是一个简单的封装系统的切换场景的管理和场景Resloader自动释放工作，方便每次切换场景能自动将资源清理干净。
 
-4、SoundMgr 游戏中的声音模块管理，封装引擎声音模块接口给业务层使用，封装目的也简单方便使用，也针对引擎频频api调整的防备。
+3、SoundMgr 游戏中的声音模块管理，封装引擎声音模块接口给业务层使用，封装目的也简单方便使用，也针对引擎频频api调整的防备。
 
-5、 StoreMgr 游戏中数据落地管理模块，给业务层封装方便合适的接口方便使用，也时将业务和引擎隔离的中间模块，目的也是 适应 以后的引擎接口调整和业务瓶颈时需要更换落地方案时方便统一处理
+4、 StoreMgr 游戏中数据落地管理模块，给业务层封装方便合适的接口方便使用，也时将业务和引擎隔离的中间模块，目的也是 适应 以后的引擎接口调整和业务瓶颈时需要更换落地方案时方便统一处理
 
-6、UIMgr 游戏中的界面管理器，游戏中所有的弹窗界面都由UIMgr 弹出和管理。之所以统一管理是为了方便在复杂的弹窗逻辑中能够全局控制界面的层级和弹出规则。提供两中弹窗接口，单例弹窗（有的界面只能弹出一个，如果再谈的时候直接更新界面的内容），和普通弹窗。
+5、UIMgr 游戏中的界面管理器，游戏中所有的弹窗界面都由UIMgr 弹出和管理。之所以统一管理是为了方便在复杂的弹窗逻辑中能够全局控制界面的层级和弹出规则。提供两中弹窗接口，单例弹窗（有的界面只能弹出一个，如果再谈的时候直接更新界面的内容），和普通弹窗。
 
-8、BaseUI  ui 组件基类，封装常用ui接口
+6、BaseUI  ui 组件基类，封装常用ui接口
 
-9、BaseView 所有弹窗界面的 基类，配合 UIMgr 的一些封装，实现界面的管理，也封装了一些常用公共接口
+7、BaseView 所有弹窗界面的 基类，配合 UIMgr 的一些封装，实现界面的管理，也封装了一些常用公共接口
 
-10、BaseScene  继承自BaseView,所有scene 的基类，主要封装针对scene的一些公共接口
+8、BaseScene  继承自BaseView,所有scene 的基类，主要封装针对scene的一些公共接口
 
-11、BaseService 针对service 的一些公共接口封装
+9、BaseService 针对service 的一些公共接口封装
 
-12、platform 平台接口单例，会按不同平台实现不同的子类，在游戏启动时按当前平台实例对应的平台对象。比如Android，IOS, WeiXinMiniGame等平台
+10、platform 平台接口单例，会按不同平台实现不同的子类，在游戏启动时按当前平台实例对应的平台对象。比如Android，IOS, WeiXinMiniGame等平台
 
-13、Network 网络单例对象，负责网络层数据收发包解包等操作，本身也是一个事件派发器，收到到的网络包以事件派发的方式通知给 关心此包的Service
+11、Network 网络单例对象，负责网络层数据收发包解包等操作，本身也是一个事件派发器，收到到的网络包以事件派发的方式通知给 关心此包的Service
 
-14、UpdateManager 热更新模块，主要负责游戏热更新功能，只有原生平台才有效触发流程，其它平台直接跳过。
+12、UpdateManager 热更新模块，主要负责游戏热更新功能，只有原生平台才有效触发流程，其它平台直接跳过。
+
