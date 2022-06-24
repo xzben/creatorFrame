@@ -1,0 +1,67 @@
+package login_activity;
+
+message getLoginReward
+{
+	required int32  normalget = 1; //是否普通获取登录奖励 
+	optional string uuid = 2; // 观看广告获取登录奖励许传递观看的广告uuid
+}
+
+message rewardItem
+{
+	required int32 id = 1; //itemid
+	required int32 num = 2; //num
+}
+
+message getLoginRewardResp
+{
+	required int32 code = 1; //是否成功 = 0 代表成功
+	repeated rewardItem items = 2; //获得的奖励
+}
+
+//请求转盘
+message requestTurnTable
+{
+	optional string uuid = 1; //观看得广告uuid
+}
+
+message requestTurnTableSumReward
+{
+	
+}
+
+message TurnSumReward
+{
+	required int32 code = 1; // code
+	repeated rewardItem items = 2; //累计次数奖励 
+}
+
+//转盘结果
+message TurnResult
+{
+	required int32 code = 1; // 是否成功 = 0 代表成功
+	optional int32 pos = 2; //转盘旋转的结果位置
+	repeated rewardItem items = 3; //获得的奖励
+}
+
+
+
+message reqShareVideoReward
+{
+	
+}
+
+message respShareVideoReward
+{
+	required int32 code = 1; //领取奖励结果
+	repeated rewardItem items = 2; //获得的奖励
+}
+
+message reqFinishGuide
+{
+	required int32 flag = 1; //完成引导的标记
+}
+
+message respFinishGuide
+{
+	required int32 code = 1; //结果
+}

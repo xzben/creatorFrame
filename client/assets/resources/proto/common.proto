@@ -7,6 +7,12 @@ message CommonHead{
 	optional bytes byte = 3; 		//协议包流
 }
 
+message GameHead{
+	required int32 gameId = 1; //游戏id
+	required int32 roomId = 2; //房间id
+	required bytes byte = 3;
+}
+
 message Heart
 {
 	optional int32 clientTime = 1;	

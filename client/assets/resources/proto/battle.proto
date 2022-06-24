@@ -1,0 +1,127 @@
+package battle;
+
+message moveOperate
+{
+	required int32 uid = 1;    //玩家id
+	required int32 status = 2; //当前运动状态  0 站立、 1 跑、 2 死亡  
+	required int32 angle = 3;  //运动方向
+}
+
+message otherOperate
+{
+	required int32 uid = 1;    //玩家id
+	required int32 opType = 2; //操作类型  0:发送表情
+	optional int32 val1 = 3; //参数1 
+	optional int32 val2 = 4;  //参数2
+	optional string val3 = 5;  //参数3
+	optional int32 val4 = 6; //参数4
+	optional int32 val5 = 7; //参数5
+}
+
+message position{
+	required int32 x = 1;
+	required int32 y = 2;
+	required int32 z = 3;
+}
+
+message playSkill
+{
+	required int32 uid = 1; //玩家id
+	required int32 skillId = 2; //技能id
+	optional int32 opType = 3; // opType == 0 代表没有方向的技能，== 1 代表有方向
+	optional int32 angle = 4; //技能释放的方向
+	optional position pos = 5; //技能释放位置	
+}
+
+message oneFrame
+{
+	repeated moveOperate moves = 1;   //当前帧的移动操作
+	repeated playSkill   skills = 2; //当前帧的技能操作
+	repeated otherOperate	otherOp = 3; //当前帧其他的操作
+}
+
+message frames
+{
+	repeated oneFrame framelist = 1; //当前帧的所有操作
+	required int32 frameIndex = 2; //当前接受消息到第几帧 
+}
+
+message skillLevelInfo
+{
+	required int32 skillId = 1; //技能id
+	required int32 level = 2; //技能等级	
+}
+
+message battlePlayer
+{
+	required int32 uid = 1; //玩家id
+	required int32 hero = 2; //玩家选择的英雄角色
+	required int32 weapon = 3; //玩家持有的武器
+	required string nickname = 4; //玩家昵称
+	required string icon = 5; //玩家icon
+	optional int32  ai = 6; //ai 策略id
+	required int32 heroLevel = 7; //玩家英雄等级
+	repeated skillLevelInfo skillLevel = 8; //技能等级
+}
+
+message battleStart
+{
+	required int32 randomseed = 1; //随机时间种子
+	repeated battlePlayer players = 2; //当前战斗的玩家
+	required int32 framedt = 3; //每帧的时间，单位为毫秒
+	required int32 roomId = 4; //所在房间id
+	required int32 gameId = 5; //所在游戏id
+	required int32 sceneId = 6; //场景id
+	required int32 framebt = 7; //服务器每帧是客户端每帧的多少倍
+	required int32 clientdt = 8; //客户端每帧间隔时间
+	required int32 team = 9; //队伍数量
+}
+
+message ready
+{
+	
+}
+
+message reconnectGame{
+	
+}
+
+message playerReconnectGame{
+	optional battleStart start = 1; //开始消息
+}
+
+message respGameFrames
+{
+	required int32 startFrame = 1; //起始的帧消息
+	repeated oneFrame framelist = 2; //当前的所有帧数据
+	required int32 frameIndex = 3; //当前接受消息到第几帧 
+}
+
+message reqGameFrames
+{
+	required int32 startFrame = 1; //重连需要请求的 起始帧数据
+}
+
+message gameOver
+{
+		
+}
+
+message notifyPlayerExitGame
+{
+	required int32 roomId = 1; //房间号
+	required int32 uid = 2;    //玩家id
+	required int32 time = 3; // 退出时间
+	required int32 frame = 4; //退出时当前服务器的帧
+}
+
+message notifyAllReady
+{
+	
+}
+
+message LoadingProcess
+{
+	required int32 uid = 1; //玩家id
+	required int32 process = 2; //加载进度
+}

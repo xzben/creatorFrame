@@ -1,0 +1,40 @@
+package email;
+
+message attach_item
+{
+	required int32 id = 1;
+	required int32 num = 2;
+}
+
+message email_item
+{
+	required int32 id = 1;
+	required int32 send_uid = 2;
+	required int32 recv_uid = 3;
+	required int32 send_time = 4;
+	required string title = 5;
+	required string content = 6;
+	repeated attach_item attach_items = 7;
+	required int32 type = 8;
+	required int32 status = 9;
+}
+
+message email_list
+{
+	repeated email_item emails = 1;
+}
+
+message get_remail_list
+{
+	
+}
+
+message read_email
+{
+	repeated int32 ids = 1; //要读取的邮件id
+}
+
+message delete_email
+{
+	repeated int32 ids = 1; //要删除的邮件id
+}

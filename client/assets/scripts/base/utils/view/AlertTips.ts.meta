@@ -1,0 +1,13 @@
+{
+  "ver": "4.0.23",
+  "importer": "typescript",
+  "imported": true,
+  "uuid": "22761939-c94a-489c-8f8a-0ee8a1490da6",
+  "files": [],
+  "subMetas": {},
+  "userData": {
+    "moduleId": "project:///assets/scripts/utils/view/AlertTips.js",
+    "importerSettings": 7,
+    "simulateGlobals": []
+  }
+}

@@ -1,0 +1,130 @@
+package game;
+
+message startMatch
+{
+	required int32 gameId = 1; //游戏id
+	required int32 uid = 2; //玩家id
+	required int32 sceneid = 3; //游戏战斗场景id
+	optional int32 heroId = 4; //战斗使用的英雄id，如果不传代表使用当前玩家自己提前设置好的战斗英雄
+	optional string uuid = 5; //战斗试用英雄，观看的广告uuid，
+	required int32 isnetwork = 6; //是否是单机战斗 
+}
+
+message skillLevelInfo
+{
+	required int32 skillId = 1; //技能id
+	required int32 level = 2; //技能等级	
+}
+
+message battlePlayer
+{
+	required int32 uid = 1; //玩家id
+	required int32 hero = 2; //玩家选择的英雄角色
+	required int32 weapon = 3; //玩家持有的武器
+	required string nickname = 4; //玩家昵称
+	required string icon = 5; //玩家icon
+	optional int32  ai = 6; //ai 策略id
+	required int32 heroLevel = 7; //玩家英雄等级
+	repeated skillLevelInfo skillLevel = 8; //技能等级
+}
+
+message battleStart
+{
+	required int32 randomseed = 1; //随机时间种子
+	repeated battlePlayer players = 2; //当前战斗的玩家
+	required int32 framedt = 3; //每帧的时间，单位为毫秒
+	required int32 roomId = 4; //所在房间id
+	required int32 gameId = 5; //所在游戏id
+	required int32 sceneId = 6; //场景id
+	required int32 framebt = 7; //服务器每帧是客户端每帧的多少倍
+	required int32 clientdt = 8; //客户端每帧间隔时间	
+	required int32 team = 9; //队伍数量
+}
+
+message respMatch{
+	required int32 code = 1;
+	optional battleStart startData = 2; //如果是单机版本，匹配直接返回战斗参数
+}
+
+message exitGame
+{
+	required int32 roomId = 3; //场景id
+}
+
+message respExitGame
+{
+	required int32 code = 1;
+}
+
+message rewardItem
+{
+	required int32 id = 1; //itemid
+	required int32 num = 2; //num
+}
+
+message playerCollectInfo
+{
+	required int32 uid = 1;   //玩家uid
+	required int32 rank = 2;   //玩家排名
+	required int32 killNum = 3;  //击杀数量
+	required int32 battleTime = 4; //战斗时长
+	required int32 causeHurt = 5; //造成伤害
+	required int32 bearHurt = 6; //承受伤害
+	required int32 hugKill = 7; //拥抱杀敌数
+	optional int32 useHero = 8 [default=0]; //玩家当前使用的英雄id
+	optional int32 treasure = 9 [default=0]; //宝石数量
+}
+
+message respSettlementGame
+{
+	required int32 sceneId = 1; //场景id
+	required int32 roomId = 2;  //房间id
+	required int32 rank = 3;   //玩家排名
+	repeated rewardItem items = 4; //获得的奖励
+	repeated playerCollectInfo players = 5;   //玩家信息
+	required int32 gameLevel = 6; //战斗评级
+	repeated int32 titles = 7; //战斗的头衔
+	required int32 heroId = 8; //战斗使用的英雄
+}
+
+message reqSettlementGame
+{
+	required int32 sceneId = 1; //场景id
+	required int32 roomId = 2;  //房间id
+	repeated playerCollectInfo players = 3;   //玩家信息
+	required int32 isgameover = 4; //游戏是否已经结束，如果中途退出发结算则发 0 否则发1
+	required int32 gameLevel = 5; //战斗评级
+	repeated int32 titles = 6; //战斗的头衔
+	required int32 heroId = 7; //战斗使用的英雄
+}
+
+message reqGameOverRankReward
+{
+	required int32 sceneId = 1; //场景id
+	required int32 roomId = 2;  //房间id
+	required int32 rank = 3;   //玩家排名
+	optional string uuid = 4;  //广告多倍领取
+	required int32 heroId = 5; //英雄id
+}
+
+message respGameOverRankReward
+{
+	required int32 code = 1;
+}
+
+message reqRankList{
+	
+}
+
+message RankItem{
+	required int32 uid = 1;
+	required string nickname = 2;
+	required string icon = 3;
+	required int32  win = 4;
+	required int32  count = 5;
+	required int32 rank = 6; 
+}
+
+message respRanList{
+	repeated RankItem items = 1; //排行列表
+}

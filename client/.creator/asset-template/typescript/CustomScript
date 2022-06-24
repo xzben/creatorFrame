@@ -1,0 +1,14 @@
+/*
+ * @Author: xzben
+ * @Date: 2022-06-06 18:23:55
+ * @LastEditors: xzben
+ * @LastEditTime: 2022-06-06 18:25:14
+ * @Description: file content
+ */
+import * as cc from 'cc';
+const { ccclass, property } = cc._decorator;
+
+@ccclass('<%UnderscoreCaseClassName%>')
+export class <%UnderscoreCaseClassName%>{
+
+}

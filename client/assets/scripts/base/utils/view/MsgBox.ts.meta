@@ -1,0 +1,13 @@
+{
+  "ver": "4.0.23",
+  "importer": "typescript",
+  "imported": true,
+  "uuid": "a1d64572-bca5-42d9-84a4-56d97ac90bd4",
+  "files": [],
+  "subMetas": {},
+  "userData": {
+    "moduleId": "project:///assets/scripts/utils/view/MsgBox.js",
+    "importerSettings": 7,
+    "simulateGlobals": []
+  }
+}

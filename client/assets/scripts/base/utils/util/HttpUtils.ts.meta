@@ -1,0 +1,13 @@
+{
+  "ver": "4.0.23",
+  "importer": "typescript",
+  "imported": true,
+  "uuid": "ddf6dda9-07d4-4295-8dd4-8ce45b78dc35",
+  "files": [],
+  "subMetas": {},
+  "userData": {
+    "moduleId": "project:///assets/scripts/utils/util/HttpUtils.js",
+    "importerSettings": 7,
+    "simulateGlobals": []
+  }
+}

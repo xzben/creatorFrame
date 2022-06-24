@@ -1,5 +1,11 @@
 {
-  "ver": "2.0.0",
-  "uuid": "e57dbb9e-16f3-4666-b916-7d20c75c8d6b",
-  "subMetas": {}
+  "ver": "1.0.1",
+  "importer": "text",
+  "imported": true,
+  "uuid": "61ef1462-842f-410f-adb1-2f411a58deca",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {},
+  "userData": {}
 }

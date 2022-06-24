@@ -1,0 +1,7 @@
+export * from "./AOPManager"
+export * from "./ResLoader"
+export * from "./SceneMgr"
+export * from "./ServiceMgr"
+export * from "./SoundMgr"
+export * from "./StoreMgr"
+export * from "./UIMgr"

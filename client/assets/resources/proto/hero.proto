@@ -1,0 +1,91 @@
+package hero;
+
+
+//请求设置当前使用的英雄
+message reqUseHero{
+	required int32 heroId = 1; //设置玩家当前使用的英雄id
+}
+
+message respUseHero{
+	required int32 code = 1; //设置状态 0 代表成功
+}
+
+//请求观看广告获得奖励
+message reqViewADShow{
+}
+
+message respViewADShow{
+	required string uuid = 1; //此次观看视频的内部唯一标识，通过此id能最终获取对应的奖励
+}
+
+//观看完广告请求获得英雄
+message reqGetHero{
+	required string  way = 1; //获取英雄的途径  1、钻石购买， 2、广告获得碎片
+	required int32  heroId = 2; //要获取的英雄id 
+	optional string uuid = 3; //获取英雄观看广告的uuid，后期服务器可能会校验是否真的观看广告成功
+}
+
+message respGetHero{
+	required int32 code = 1;
+}
+
+message reqMergeHero{
+	required int32 heroId = 1; //要合成的英雄
+}
+
+message respMergeHero{
+	required int32 code = 1; 
+}
+
+//游戏开始前请求当前能够试用的英雄id
+message reqGetTryHero{
+	
+}
+
+message respGetTryHero{
+	required int32 heroId = 1; //当前能试用的英雄id，<= 0 代表无可试用英雄
+}
+
+message reqGetPower{
+	required string uuid = 1;
+	required bool isMultiple = 2;
+}
+
+message reqGetDiamond{
+	required string uuid = 1;
+	required bool isMultiple = 2;
+}
+
+message RewardItem{
+	required int32 id = 1; 
+	required int32 num = 2;
+}
+
+message respGetPower{
+	required int32 code = 1;
+	repeated RewardItem items = 2; //奖励物品
+}
+
+message respGetDiamond{
+	required int32 code = 1;
+	repeated RewardItem items = 2; //奖励物品
+}
+
+message reqGetAchieveReward{
+	required int32 achieveId = 1; //成就id
+}
+
+message respAchieveReward{
+	required int32 code = 1;
+	optional int32 achieveId = 2; //成就id
+	repeated RewardItem items = 3; //奖励物品
+}
+
+message reqUpLevelSkill{
+	required int32 heroId = 1;
+	required int32 skillId = 2;
+}
+
+message respUpLevelSkill{
+	required int32 code = 1;
+}
