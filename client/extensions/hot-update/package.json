@@ -1,0 +1,25 @@
+{
+    "name": "mysetting",
+    "author": "xzben",
+    "version": "0.0.2",
+    "package_version": 2,
+    "main": "browser.js",
+    "description": "用于热更新插件 (3.0.0)",
+    "contributions": {
+        "builder": "./builder",
+        "messages": {
+            "builder:task-changed": {
+                "public": true,
+                "methods": [
+                    "builder_ready"
+                ]
+            }
+        }
+    },
+
+    "dependencies": {
+        "@types/electron": "^1.6.10",
+        "@types/fs-extra": "^5.0.4",
+        "@types/node": "^10.5.2"
+    }
+}
