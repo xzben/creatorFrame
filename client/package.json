@@ -1,11 +1,11 @@
 {
-  "name": "frameSynchGame",
-  "uuid": "14db02f7-c81a-44b3-bb1c-a0cba84a347a",
-  "version": "3.5.0",
   "creator": {
-    "version": "3.5.0"
+    "version": "3.5.2"
   },
   "dependencies": {
     "babylonjs": "^5.7.0"
-  }
+  },
+  "name": "frameSynchGame",
+  "uuid": "14db02f7-c81a-44b3-bb1c-a0cba84a347a",
+  "version": "3.5.2"
 }
