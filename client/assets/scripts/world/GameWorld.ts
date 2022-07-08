@@ -80,7 +80,7 @@ export class GameWorld extends cc.Component {
     }
 
     initResourceSize(){
-        let framesize = cc.view.getFrameSize();
+        let framesize = cc.screen.windowSize;
         let mysize = cc.size(720, 1280);
 
         let ftmp = framesize.width/framesize.height;

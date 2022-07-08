@@ -2,7 +2,7 @@ import * as cc from 'cc';
 import { TableViewCell} from "./TableViewCell"
 import { utils } from "../utils/utils"
 
-const { ccclass, property } = cc._decorator;
+const { ccclass, property, requireComponent} = cc._decorator;
 
 export enum DirectType{
     VERTICAL = 0,    //垂直
@@ -13,6 +13,8 @@ type InitCallback = ()=>void;
 type ClickCallback = (index : number, cellData : any)=>void;
 
 @ccclass('TableView')
+@requireComponent(cc.ScrollView)
+@requireComponent(cc.UITransform)
 export class TableView extends cc.Component {
     @property({
         type : cc.Enum(DirectType),
@@ -67,7 +69,7 @@ export class TableView extends cc.Component {
     protected onLoad(){
         this.initControl();
         console.log("tableview start")
-        this.node.on(cc.SystemEventType.SIZE_CHANGED, ()=>{
+        this.node.on(cc.Node.EventType.SIZE_CHANGED, ()=>{
             console.log("tableview resize")
             let offset = this.m_preScrollOffset;
             if(offset == null)
@@ -358,13 +360,13 @@ export class TableView extends cc.Component {
         if(this.m_item)
         {
             let newNode = cc.instantiate(this.m_item);
-            let anchorPoint = cc.v2(0.5, 1);
-            if(this.m_director == DirectType.HORIZONTAL){
-                anchorPoint = cc.v2(0, 0.5);
-            }else{
-                anchorPoint = cc.v2(0.5, 1);
-            }
-            utils.setNodeAnchorPoint(newNode, anchorPoint);
+            // let anchorPoint = cc.v2(0.5, 1);
+            // if(this.m_director == DirectType.HORIZONTAL){
+            //     anchorPoint = cc.v2(0, 0.5);
+            // }else{
+            //     anchorPoint = cc.v2(0.5, 1);
+            // }
+            // utils.setNodeAnchorPoint(newNode, anchorPoint);
             this.m_content?.addChild(newNode);
             let cell = newNode.getComponent(TableViewCell)
             if(cell == null){
@@ -386,6 +388,23 @@ export class TableView extends cc.Component {
         return cc.v3(x, y, 0);
     }
 
+    protected setCellPos( node : cc.Node, pos : cc.Vec3)
+    {
+        let uitranform = node.getComponent(cc.UITransform)!;
+        if(uitranform)
+        {
+            if(this.m_director == DirectType.HORIZONTAL)
+            {
+                pos.x += uitranform.anchorX*uitranform.width;
+            }
+            else
+            {
+                pos.y -= uitranform.anchorY*uitranform.height;
+            }
+        }
+        node.position = pos;
+    }
+
     protected updateCellAtIndex( idx : number){
         let cellData = this.m_data[idx];
         let cell : TableViewCell | undefined = this.m_showNodes.get(idx);
@@ -393,10 +412,10 @@ export class TableView extends cc.Component {
             cell = this.getDequeueCell();
             cell!.node.active = true;
             cell!.setData(idx, cellData, this.m_extendData);
-            cell!.node.position = this.getItemPos(idx);
+            this.setCellPos(cell.node, this.getItemPos(idx));
             this.m_showNodes.set(idx, cell!);
         }else{
-            cell.node.position = this.getItemPos(idx);
+            this.setCellPos(cell.node, this.getItemPos(idx));
         }
     }
 

@@ -6,6 +6,7 @@
  * @Description: file content
  */
 import * as cc from 'cc';
+import { SceneMgr, UIMgr } from '../../base/core';
 import { BaseScene } from '../../base/frame';
 import { GameService } from '../battleview/GameService';
 const { ccclass, property } = cc._decorator;
@@ -15,8 +16,9 @@ export class HallScene extends BaseScene {
 
     handleStartGame()
     {
-        GameService.getInstance().startGame(1);
+        SceneMgr.getInstance().pushScene("test#scene")
     }
+
     start() {
 
     }
