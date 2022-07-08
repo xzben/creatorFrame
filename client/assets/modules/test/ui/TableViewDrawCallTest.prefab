@@ -447,6 +447,7 @@
     },
     "m_spaceing": 5,
     "m_headEndGap": 10,
+    "m_redefineRender": true,
     "_id": ""
   },
   {

@@ -1,6 +1,7 @@
 import * as cc from 'cc';
 import { TableViewCell} from "./TableViewCell"
 import { utils } from "../utils/utils"
+import { RenderChange } from './RenderChange';
 
 const { ccclass, property, requireComponent} = cc._decorator;
 
@@ -41,7 +42,12 @@ export class TableView extends cc.Component {
         tooltip: "列表头部和尾部的间隙",
     })
     protected m_headEndGap : number = 0;
-    
+
+    @property({
+        displayName : "redefineRender",
+        tooltip: "是否使用重定义Render实现DrawCall优化",
+    })
+    protected m_redefineRender : boolean = true;
 
     protected m_data : any[] = [];
     protected m_extendData : any = null;
@@ -135,12 +141,18 @@ export class TableView extends cc.Component {
     protected initControl(){
         this.m_scrollView = this.getComponent(cc.ScrollView);
         this.m_uitranform = this.getComponent(cc.UITransform);
+
         if(this.m_scrollView)
         {
             this.m_content = this.m_scrollView.content;
             if(this.m_content)
             {
                 this.m_contentUITransform = this.m_content.getComponent(cc.UITransform);
+                this.m_content.walk = (... param : any [])=>{
+                    console.log("content walk", param)
+                }
+                if(!this.m_content.getComponent(RenderChange))
+                    this.m_content.addComponent(RenderChange);
             }
 
             let eventHandler = new cc.EventHandler();
