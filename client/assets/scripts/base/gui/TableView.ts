@@ -151,8 +151,11 @@ export class TableView extends cc.Component {
                 this.m_content.walk = (... param : any [])=>{
                     console.log("content walk", param)
                 }
-                if(!this.m_content.getComponent(RenderChange))
-                    this.m_content.addComponent(RenderChange);
+                if(this.m_redefineRender)
+                {
+                    if(!this.m_content.getComponent(RenderChange))
+                        this.m_content.addComponent(RenderChange);
+                }
             }
 
             let eventHandler = new cc.EventHandler();
