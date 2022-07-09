@@ -28,35 +28,60 @@ export class RenderChange extends cc.Renderable2D {
                 rendertemp._render = rendertemp._realRenderFunc
                 rendertemp._realRenderFunc = null!;
             }
+
+            if(rendertemp._realPostRender != null)
+            {  
+                rendertemp._postRender = rendertemp._realPostRender
+                rendertemp._realPostRender = null!;
+            }
         });
+    }
+
+    private renderChild(node : cc.Node, prename : string)
+    {
+        if(!node.activeInHierarchy)return;
+
+        let curname = `${prename}$${node.name}`;
+        let render = node.getComponent(cc.Renderable2D);
+        if(render)
+        {
+            let arr = this.m_renderGroup.get(curname);
+            let isnewarr = false;
+            if(arr == null)
+            {
+                isnewarr = true;
+                arr = new Array();
+                this.m_renderlist.push(curname)
+                this.m_renderGroup.set(curname, arr);
+            }
+
+            let rendertemp = render as any;
+            if(rendertemp._realRenderFunc == null)
+            {
+                rendertemp._realRenderFunc = rendertemp._render;
+                rendertemp._render = function(){}
+            }
+ 
+            arr.push(rendertemp);
+            node.children.forEach(( ch : cc.Node )=>{
+                this.renderChild(ch, curname);
+            })
+        }
+        else
+        {
+            node.children.forEach(( ch : cc.Node )=>{
+                this.renderChild(ch, curname);
+            })
+        }
+
     }
 
     public updateAssembler (batcher: any) {
         this.m_renderlist.length = 0;
         this.m_renderGroup.clear();
 
-        let renders = this.node.getComponentsInChildren(cc.Renderable2D);
-        renders.forEach(( render : cc.Renderable2D)=>{
-            if(!render.enabledInHierarchy) return;
-            if(render.node == this.node) return;
-
-            let rendertemp = render as any;
-            if(rendertemp._realRenderFunc == null)
-            {
-                rendertemp._realRenderFunc = rendertemp._render;
-                rendertemp._render = function(){
-                }
-            }
-            
-            let node_name = render.node.name;
-            let arr = this.m_renderGroup.get(node_name);
-            if(arr == null)
-            {
-                arr = new Array();
-                this.m_renderlist.push(node_name)
-                this.m_renderGroup.set(node_name, arr)
-            }
-            arr.push(rendertemp)
+        this.node.children.forEach(( ch : cc.Node )=>{
+            this.renderChild(ch, "");
         })
     }
 
