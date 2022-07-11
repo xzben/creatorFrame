@@ -15,6 +15,44 @@ export class TableViewCell extends BaseUI {
     protected m_data : any = null;
     protected m_tree : any = null;
 
+    protected m_renders : cc.Renderable2D[] = [];
+
+    public __redefineInit()
+    {
+        this.m_renders = this.node.getComponentsInChildren(cc.Renderable2D);
+        this.m_renders.forEach(( render : cc.Renderable2D )=>{
+            let rendertemp = render as any;
+            if(rendertemp._realRenderFunc == null)
+            {
+                rendertemp._realRenderFunc = rendertemp._render;
+                rendertemp._render = function(){}
+            }
+        })
+    }
+
+    public ___redefineReset()
+    {
+        this.m_renders.forEach(( render : cc.Renderable2D )=>{
+            let rendertemp = render as any;
+            if(rendertemp._realRenderFunc != null)
+            {
+                rendertemp._render = rendertemp._realRenderFunc
+                rendertemp._realRenderFunc = null;
+            }
+        })
+        this.m_renders = [];
+    }
+
+    public __renderUI( level : number, batcher : any)
+    {
+        let render = this.m_renders[level];
+        if(render){
+            (render as any)._realRenderFunc(batcher);
+            return true;
+        }
+
+        return false;
+    }
     getCellIndex(){
         return this.m_index;
     }

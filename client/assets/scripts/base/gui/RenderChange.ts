@@ -18,6 +18,7 @@ export class RenderChange extends cc.Renderable2D {
     private m_renderlist : Array<string> = new Array();
     private m_renderGroup : Map<string, Array<IDelayRender>> = new Map();
 
+    on
     onDisable()
     {
         let renders = this.node.getComponentsInChildren(cc.Renderable2D);
@@ -27,12 +28,6 @@ export class RenderChange extends cc.Renderable2D {
             {
                 rendertemp._render = rendertemp._realRenderFunc
                 rendertemp._realRenderFunc = null!;
-            }
-
-            if(rendertemp._realPostRender != null)
-            {  
-                rendertemp._postRender = rendertemp._realPostRender
-                rendertemp._realPostRender = null!;
             }
         });
     }

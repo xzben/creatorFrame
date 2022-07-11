@@ -1,7 +1,7 @@
 import * as cc from 'cc';
 import { TableViewCell} from "./TableViewCell"
 import { utils } from "../utils/utils"
-import { RenderChange } from './RenderChange';
+import { ReDefineTableViewRender } from './ReDefineTableViewRender';
 
 const { ccclass, property, requireComponent} = cc._decorator;
 
@@ -12,6 +12,7 @@ export enum DirectType{
 
 type InitCallback = ()=>void;
 type ClickCallback = (index : number, cellData : any)=>void;
+
 
 @ccclass('TableView')
 @requireComponent(cc.ScrollView)
@@ -153,8 +154,11 @@ export class TableView extends cc.Component {
                 }
                 if(this.m_redefineRender)
                 {
-                    if(!this.m_content.getComponent(RenderChange))
-                        this.m_content.addComponent(RenderChange);
+                    if(!this.m_content.getComponent(ReDefineTableViewRender))
+                    {
+                        let redefine = this.m_content.addComponent(ReDefineTableViewRender);
+                        redefine.setTableView(this);
+                    }
                 }
             }
 
@@ -316,8 +320,6 @@ export class TableView extends cc.Component {
     }
 
     protected updateScrollViewContent( forceUpdate : boolean){
-
-        // console.time("xxxxxxxxxxxxxxx");
         let offset = this.getContainerOffset();
         // if(this.m_preScrollOffset != null && this.m_preScrollOffset == offset) return;
         if(!forceUpdate && this.m_preScrollOffset != null && Math.floor(this.m_preScrollOffset) == Math.floor(offset)) return;
@@ -375,20 +377,16 @@ export class TableView extends cc.Component {
         if(this.m_item)
         {
             let newNode = cc.instantiate(this.m_item);
-            // let anchorPoint = cc.v2(0.5, 1);
-            // if(this.m_director == DirectType.HORIZONTAL){
-            //     anchorPoint = cc.v2(0, 0.5);
-            // }else{
-            //     anchorPoint = cc.v2(0.5, 1);
-            // }
-            // utils.setNodeAnchorPoint(newNode, anchorPoint);
             this.m_content?.addChild(newNode);
             let cell = newNode.getComponent(TableViewCell)
             if(cell == null){
                 cell = newNode.addComponent(TableViewCell);
             }
+
+            if(this.m_redefineRender)
+                cell.__redefineInit();
+            
             cell.setTree(this);
-            console.log("======getDequeueCell new======")
             return cell;
         }
     }
@@ -506,3 +504,5 @@ export class TableView extends cc.Component {
         }
     }
 }
+
+
