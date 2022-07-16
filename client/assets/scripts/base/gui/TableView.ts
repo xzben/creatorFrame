@@ -149,9 +149,6 @@ export class TableView extends cc.Component {
             if(this.m_content)
             {
                 this.m_contentUITransform = this.m_content.getComponent(cc.UITransform);
-                this.m_content.walk = (... param : any [])=>{
-                    console.log("content walk", param)
-                }
                 if(this.m_redefineRender)
                 {
                     if(!this.m_content.getComponent(ReDefineTableViewRender))
