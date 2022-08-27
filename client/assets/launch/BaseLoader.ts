@@ -149,10 +149,10 @@ export class BaseLoader{
         let check_done = ( err : Error | null, url : string, bundle : BundleAsset | null)=>{
             if(isDone) return;
             if(err == null && bundle != null){
+                bundles.set(url, bundle);
                 count --;
                 if(count <= 0){
                     isDone = true;
-                    bundles.set(url, bundle);
                     onComplete(null, bundles );
                 }
             }else{
@@ -209,8 +209,12 @@ export class BaseLoader{
                     options.version = version;
                     cc.assetManager.loadBundle(nameOrUrl, options, (err: Error | null, data: Bundle)=>{
                         if(err == null){
-                            let asset = new BundleAsset(nameOrUrl, data);
-                            this.m_loadedBundle.set(nameOrUrl, asset);
+                            /** 防止同时调用 loadBundle 多次造成创建多个 BundleAsset */
+                            let asset = this.m_loadedBundle.get(nameOrUrl);
+                            if(!asset) {
+                                asset = new BundleAsset(nameOrUrl, data);
+                                this.m_loadedBundle.set(nameOrUrl, asset);
+                            }
                             onComplete(null, asset);
                         }else{
                             onComplete(err, null);
@@ -219,8 +223,12 @@ export class BaseLoader{
                 }else{
                     cc.assetManager.loadBundle(nameOrUrl, options, (err: Error | null, data: Bundle)=>{
                         if(err == null){
-                            let asset = new BundleAsset(nameOrUrl, data);
-                            this.m_loadedBundle.set(nameOrUrl, asset);
+                            /** 防止同时调用 loadBundle 多次造成创建多个 BundleAsset */
+                            let asset = this.m_loadedBundle.get(nameOrUrl);
+                            if(!asset) {
+                                asset = new BundleAsset(nameOrUrl, data);
+                                this.m_loadedBundle.set(nameOrUrl, asset);
+                            }
                             onComplete(null, asset);
                         }else{
                             onComplete(err, null);
@@ -404,9 +412,13 @@ export class BaseLoader{
                                 onProgress(bundleBase+finished/total);
                         },(err, obj : cc.Asset)=>{
                             if( err == null && obj){
-                                let asset = new NormalAsset(path, obj, bundle);
+                                /** 防止同时调用 load 多次造成创建多个 NormalAsset */
+                                let asset = this.m_loadedAssets.get(path);
+                                if(!asset) {
+                                    asset = new NormalAsset(path, obj, bundle);
+                                    this.m_loadedAssets.set(path, asset);
+                                }
                                 asset.addRef();
-                                this.m_loadedAssets.set(path, asset);
                                 onComplete(null, asset.getAsset());
                             }else{
                                 onComplete(err || new Error("load asset" + path+ "failed"), null);
@@ -418,9 +430,13 @@ export class BaseLoader{
                                 onProgress(bundleBase+finished/total);
                         },(err, obj : cc.Asset)=>{
                             if( err == null && obj){
-                                let asset = new NormalAsset(path, obj, bundle);
+                                /** 防止同时调用 load 多次造成创建多个 NormalAsset */
+                                let asset = this.m_loadedAssets.get(path);
+                                if(!asset) {
+                                    asset = new NormalAsset(path, obj, bundle);
+                                    this.m_loadedAssets.set(path, asset);
+                                }
                                 asset.addRef();
-                                this.m_loadedAssets.set(path, asset);
                                 onComplete(null, asset.getAsset());
                             }else{
                                 onComplete(err || new Error("load asset" + path+ "failed"), null);
