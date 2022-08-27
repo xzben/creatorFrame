@@ -149,10 +149,10 @@ export class BaseLoader{
         let check_done = ( err : Error | null, url : string, bundle : BundleAsset | null)=>{
             if(isDone) return;
             if(err == null && bundle != null){
+                bundles.set(url, bundle);
                 count --;
                 if(count <= 0){
                     isDone = true;
-                    bundles.set(url, bundle);
                     onComplete(null, bundles );
                 }
             }else{
